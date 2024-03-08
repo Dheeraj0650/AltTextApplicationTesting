@@ -58,4 +58,9 @@ describe("tests login to canvas and alt text home page", function(){
             assert.strictEqual(currentElements.includes(element), true, `${element} button does not found on the home page`);
         }
     });
+
+    it("closing the browser", async function(){
+        let driver = await getWebDriver();
+        await driver.quit();
+    });
 });

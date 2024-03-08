@@ -33,11 +33,22 @@ async function launchBrowserAndLoginToApp(driver){
     await action.wait(driver, altTextAppXpaths.alt_text_home_page);
 }
 
-describe("tests login to canvas and alt text home page", function(){
+describe("tests alt text home page", function(){
     it("checks Alt Text home page image and page content", async function(){
         let driver = await getWebDriver();
         await launchBrowserAndLoginToApp(driver);
-        var footer = await action.getElement(driver, altTextHomePageXpaths.context_nav);
-        await action.scrollToElement(driver, footer);
+
+        var image = await action.getElement(driver, altTextHomePageXpaths.alt_text_home_page_image);
+        await action.scrollToElement(driver, image);
+        assert.strictEqual(await action.doesElementExists(driver, image), true, `image div is missing on the home page`);
+
+        var page_content= await action.getElement(driver, altTextHomePageXpaths.alt_text_page_content);
+        await action.scrollToElement(driver, page_content);
+        assert.strictEqual(await action.doesElementExists(driver, page_content), true, `page content div is missing on the home page`);
+    });
+
+    it("closing the browser", async function(){
+        let driver = await getWebDriver();
+        await driver.quit();
     });
 });

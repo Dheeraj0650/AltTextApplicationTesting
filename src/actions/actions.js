@@ -1,6 +1,18 @@
 const {By, until} = require("selenium-webdriver");
 const {altTextAppXpaths} = require("../selectors/selectors.js");
 
+
+async function doesElementExists(driver, element){
+    try{
+        await driver.wait(until.elementIsVisible(element), 5000);
+        return true;
+    }
+    catch(error){
+        console.log("error in doesElementExists ", error.message);
+        return false;
+    } 
+}
+
 async function sendKeys(driver, keys, selector){
     try{
         await driver.wait(until.elementLocated(By.xpath(selector)), 5000)
@@ -25,10 +37,10 @@ async function click(driver, selector){
     }
 }
 
-async function wait(driver, selector){
+async function wait(driver, selector, timeout){
     for(var idx = 0; idx < 2 ; idx ++){
         try{
-            await driver.wait(until.elementLocated(By.xpath(selector)), 5000);
+            await driver.wait(until.elementLocated(By.xpath(selector)), timeout);
             break;
         }
         catch(error){
@@ -63,10 +75,10 @@ async function getElements(driver, selector){
     }
 }
 
-async function getElement(driver, selector){
+async function getElement(driver, selector, timeout=5000){
     try{
         // Switch to the frame
-        await wait(driver, selector);
+        await wait(driver, selector, timeout);
         const elements = await driver.findElement(By.xpath(selector));
         return elements;
     }
@@ -75,7 +87,7 @@ async function getElement(driver, selector){
     }
 }
 
-async function getTextFromElement(driver, currentElement){
+async function getTextFromElement(element){
     try {
         return await element.getText();
     }
@@ -111,5 +123,6 @@ module.exports = {
     getElements,
     getElement,
     getTextFromElement,
-    scrollToElement
+    scrollToElement,
+    doesElementExists
 }
