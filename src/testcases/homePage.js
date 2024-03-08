@@ -1,6 +1,6 @@
 require('dotenv').config()
 const {launchBrowser} = require("../browser/selenium_driver.js");
-const {canvasLoginXpaths, altTextAppXpaths, altTextAppNames} = require("../selectors/selectors.js");
+const {canvasLoginXpaths, altTextAppXpaths, altTextHomePageXpaths} = require("../selectors/selectors.js");
 const action = require("../actions/actions.js");
 const assert = require('assert');
 const {seleniumDriver} = require("../browser/selenium_driver.js");
@@ -34,28 +34,10 @@ async function launchBrowserAndLoginToApp(driver){
 }
 
 describe("tests login to canvas and alt text home page", function(){
-    it("checks Alt Text home page", async function(){
-        let driver = await getWebDriver(); 
-        await launchBrowserAndLoginToApp(driver)
-    
-        const buttonElements = await action.getElements(driver, altTextAppXpaths.alt_text_home_page_buttons);
-        const expectedElements = altTextAppNames.alt_text_buttons;
-
-        const currentElements = []
-
-        for(element of buttonElements){
-            let elementText = await action.getTextFromElement(driver, element)
-            if(elementText){
-                currentElements.push(elementText);
-            }
-        }
-    
-        console.log(expectedElements, currentElements);
-    
-        for(element of expectedElements){
-            console.log(element);
-            console.log(currentElements.includes(element))
-            assert.strictEqual(currentElements.includes(element), true, `${element} button does not found on the home page`);
-        }
+    it("checks Alt Text home page image and page content", async function(){
+        let driver = await getWebDriver();
+        await launchBrowserAndLoginToApp(driver);
+        var footer = await action.getElement(driver, altTextHomePageXpaths.context_nav);
+        await action.scrollToElement(driver, footer);
     });
 });

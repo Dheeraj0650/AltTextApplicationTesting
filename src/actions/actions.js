@@ -1,4 +1,5 @@
 const {By, until} = require("selenium-webdriver");
+const {altTextAppXpaths} = require("../selectors/selectors.js");
 
 async function sendKeys(driver, keys, selector){
     try{
@@ -49,9 +50,66 @@ async function switchToIframe(driver, selector){
     }
 }
 
+
+async function getElements(driver, selector){
+    try{
+        // Switch to the frame
+        await wait(driver, selector);
+        const elements = await driver.findElements(By.xpath(selector));
+        return elements;
+    }
+    catch(error){
+        console.log("error in switchToIframe ", error.message);
+    }
+}
+
+async function getElement(driver, selector){
+    try{
+        // Switch to the frame
+        await wait(driver, selector);
+        const elements = await driver.findElement(By.xpath(selector));
+        return elements;
+    }
+    catch(error){
+        console.log("error in switchToIframe ", error.message);
+    }
+}
+
+async function getTextFromElement(driver, currentElement){
+    try {
+        return await element.getText();
+    }
+    catch(error){
+        console.log(error.message);
+        return null;
+    }
+}
+
+
+async function scrollToElement(driver, element){
+    try {
+        const deltaY = (await element.getRect()).y
+        await driver.sleep(3000)
+        await driver.switchTo().defaultContent();
+        var iframe = await getElement(driver, altTextAppXpaths.alt_text_iframe);
+        await driver.actions()
+          .scroll(0, 0, 0, Math.floor(deltaY), iframe)
+          .perform()
+        await switchToIframe(driver, altTextAppXpaths.alt_text_iframe)
+    }
+    catch(error){
+        console.log(error.message);
+        return null;
+    }
+}
+
 module.exports = {
     sendKeys,
     click,
     wait,
-    switchToIframe
+    switchToIframe,
+    getElements,
+    getElement,
+    getTextFromElement,
+    scrollToElement
 }
